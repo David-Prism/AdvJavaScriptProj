@@ -1,0 +1,22 @@
+{
+  "name": "advjavascriptproj",
+  "version": "1.0.0",
+  "description": "Project for the Advanced JavaScript class taken in summer of 2020.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/David-Prism/AdvJavaScriptProj.git"
+  },
+  "author": "David",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/David-Prism/AdvJavaScriptProj/issues"
+  },
+  "homepage": "https://github.com/David-Prism/AdvJavaScriptProj#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
