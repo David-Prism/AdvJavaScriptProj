@@ -1,81 +1,56 @@
-const http = require('http');
-const path = require('path');
-const fs = require('fs');
+'use strict'
 
-const data = require('./data');
+const express = require("express");
+const bodyParser = require("body-parser");
 
+var path = require('path');
 
-http.createServer((req,res) => {
-    const thePath = req.url.toLowerCase();
-    switch(thePath) {
-      case '/':
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end('<h1>Home page</h1>' + '\n' + 'Array length: ' + data.getAll().length);
-        break;
-      case '/about':
-        fs.readFile(path.join(__dirname, 'public', 'about.html'), (err, data) => {
-            if(err) throw err;
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.end(data);
-        });  
-        break;
-      default:
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.end('Not found');
-        break;
-      }
-  }).listen(process.env.PORT || 3000, () => console.log('Server running on port 3000'));
+let exphbs = require("express-handlebars"); // should be at top of module 
 
 
+// const data = require('/data.js');
 
-// 2
-// Old version; simple text, does not use html or css
+const app = express();
 
-// http.createServer((req,res) => {
-//     const path = req.url;
-//     switch(path) {
-//       case '/':
-//         res.writeHead(200, {'Content-Type': 'text/plain'});
-//         res.end('<h1>Home page</h1>' + '\n' + 'Array length: ' + data.getAll().length);
-//         break;
-//       case '/about':
-//         res.writeHead(200, {'Content-Type': 'text/plain'});
-//         res.end('About page' + '\n' + '\n' + 'My name is David and this is my website!');
-//         break;
-//       default:
-//         res.writeHead(404, {'Content-Type': 'text/plain'});
-//         res.end('Not found');
-//         break;
-//       }
-//   }).listen(process.env.PORT || 3000, () => console.log('Server running on port 3000'));
+// app.set('views', path.join(__dirname, 'views'));
+app.engine('handlebars', exphbs({defaultLayout: false}));
+app.set("view engine", "handlebars");
 
+app.set('port', process.env.PORT || 3000);
+app.use(express.static(__dirname + '/public')); 
+app.use(bodyParser.urlencoded({extended: true})); 
 
+// send content of 'home' view as HTML response
+app.get('/', (req,res) => {
+    console.log("asdfyyyyy");
+    res.render('home');
+});
 
+app.get('/home', (req,res) => {
+    console.log("asdfyyyyy");
+    res.render('home');
+});
 
-// 3
-//Does not work; the else statement causes the first condition (the '/' path) to do nothing, and shows up as "Not found" (goes to the else statement)
+// send static file as response
+// app.get('/', (req, res) => {
+//     res.type('text/html');
+//     res.sendFile(__dirname + '/public/home.html'); 
+// });
+   
+// send plain text response
+app.get('/about', (req, res) => {
+    res.type('text/plain');
+    res.send('About page asdf');
+});
 
-// http.createServer((req,res) => {
-//     if(req.url === '/') {
-//         fs.readFile(path.join(__dirname, 'public', 'index.html'), (err, data) => {
-//             if(err) throw err;
-//             res.writeHead(200, {'Content-Type': 'text/html'});
-//             res.end(data);
-//         });  
-//     }
+// define 404 handler
+app.use( (req,res) => {
+    res.type('text/plain'); 
+    res.status(404);
+    res.send('404 - Not found');
+});
 
-//     if(req.url === '/about') {
-//         fs.readFile(path.join(__dirname, 'public', 'about.html'), (err, data) => {
-//             if(err) throw err;
-//             res.writeHead(200, {'Content-Type': 'text/html'});
-//             res.end(data);
-//         });  
-//     }
-
-//     else {
-//         res.writeHead(404, {'Content-Type': 'text/plain'});
-//         res.end('Not found');
-//     }
-
-        
-//   }).listen(process.env.PORT || 3000, () => console.log('Server running on port 3000'));
+// Delete this before production--------------------------------
+app.listen(app.get('port'), () => {
+    console.log('Express started'); 
+});
