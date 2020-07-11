@@ -8,7 +8,8 @@ var path = require('path');
 let exphbs = require("express-handlebars"); // should be at top of module 
 
 
-// const data = require('/data.js');
+const data = require('./data.js');
+let peopleList = data.getAll();
 
 const app = express();
 
@@ -22,13 +23,25 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // send content of 'home' view as HTML response
 app.get('/', (req,res) => {
-    console.log("asdfyyyyy");
+
+    console.log("foo");
+
     res.render('home');
 });
 
 app.get('/home', (req,res) => {
-    console.log("asdfyyyyy");
-    res.render('home');
+
+    console.log("bar");
+
+    // let result = data.getAll();
+    res.render('home', {people: peopleList})
+});
+
+app.get('/details', (req,res) => {
+
+    console.log("baroooo");
+
+    res.render('details', {First: req.query.first});
 });
 
 // send static file as response
@@ -40,7 +53,7 @@ app.get('/home', (req,res) => {
 // send plain text response
 app.get('/about', (req, res) => {
     res.type('text/plain');
-    res.send('About page asdf');
+    res.send('About page');
 });
 
 // define 404 handler
@@ -50,7 +63,6 @@ app.use( (req,res) => {
     res.send('404 - Not found');
 });
 
-// Delete this before production--------------------------------
 app.listen(app.get('port'), () => {
     console.log('Express started'); 
 });

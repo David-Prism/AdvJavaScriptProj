@@ -1,31 +1,31 @@
 var people = [
     {
-        First:"Ted",
-        Last:"Tandembike",
+        first:"Ted",
+        last:"Tandembike",
         age:34,
         job:"pilot"
     },
     {
-        First:"Sarah",
-        Last:"Smith",
+        first:"Sarah",
+        last:"Smith",
         age:23,
         job:"journalist"
     },
     {
-        First:"Peter",
-        Last:"Piper",
+        first:"Peter",
+        last:"Piper",
         age:47,
         job:"writer"
     },
     {
-        First:"Isabel",
-        Last:"Indigo",
+        first:"Isabel",
+        last:"Indigo",
         age:38,
         job:"biologist"
     },
     {
-        First:"David",
-        Last:"Donovan",
+        first:"David",
+        last:"Donovan",
         age:15,
         job:"student"
     }
