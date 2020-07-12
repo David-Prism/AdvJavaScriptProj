@@ -1,19 +1,18 @@
-{{!-- <h2>Name: {{First}}</h2> --}}
-
-
-<h1>What is up</h1>
+<h1>Home</h1>
 <ul>
     {{#each people}}
-    <li><a href = "/details = {{first}}">{{first}}</a></li>
+    <li><a href = "/details?first={{this.first}}">{{first}}</a></li>
     {{/each}}
 </ul>
+
+
+
+
+
 
 {{!-- <h1>What is up</h1>
 <ul>
     {{#each people}}
-    <li>{{people.First}}</li>
-    <li>{{people.Last}}</li>
-    <li>{{people.age}}</li>
-    <li>{{people.job}}</li>
+    <li><a href = "/details = {{first}}">{{first}}</a></li>
     {{/each}}
 </ul> --}}

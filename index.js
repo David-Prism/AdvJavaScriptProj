@@ -41,7 +41,7 @@ app.get('/details', (req,res) => {
 
     console.log("baroooo");
 
-    res.render('details', {First: req.query.first});
+    res.render('details', {first: req.query.first});
 });
 
 // send static file as response
