@@ -1,7 +1,7 @@
 var people = [
     {
-        first:"Ted",
-        last:"Tandembike",
+        first:"Bob",
+        last:"Burninator",
         age:34,
         job:"pilot"
     },
@@ -34,13 +34,6 @@ var people = [
 exports.getAll = () => {
     return people;
 }
-
-// exports.getItem = (first) => {
-//     let found = people.find((person) => {
-//         return person.first === first;
-//     });
-//     return found;
-// }
 
 exports.getItem = (first) => {
     let found = people.find((person) => {
