@@ -6,6 +6,7 @@ Person.find({}).lean()
     console.log(people);
   })
   .catch(err => next(err));
+  
 // return all records that match a condition
 Person.find({"first": "Peter"}).lean()
   .then((people) => {
