@@ -22,11 +22,26 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use('/api', require('cors')()); // set Access-Control-Allow-Origin header for api route
 
+//----------------------------------
+
+// OLD VERSION (prior to REACT integration)
+
+// send content of 'home' view as HTML response
+// app.get('/', (req, res, next) => {
+//     return Person.find({}).lean()
+//         .then((people) => {
+//             res.render('home', {people});
+//         })
+//         .catch(err => next(err));
+// });
+
+//-----------------------------------
+
 // send content of 'home' view as HTML response
 app.get('/', (req, res, next) => {
     return Person.find({}).lean()
-        .then((people) => {
-            res.render('home', {people});
+        .then((items) => {
+            res.render('home_react', {items: JSON.stringify(items)});
         })
         .catch(err => next(err));
 });
@@ -63,7 +78,6 @@ app.get('/delete', (req, res, next) => {
 // API
 // Returns JSON data for all docs in the database
 app.get('/api/all', (req, res, next) => {
-
     return Person.find({}).lean()
         .then((people) => {
             res.json(people);
@@ -78,13 +92,11 @@ app.get('/api/all', (req, res, next) => {
 // API
 // Returns JSON data for one object from the database
 app.get('/api/details', (req, res, next) => {
-
     var name = req.query.first;
     console.log(name);
     const search_pattern = new RegExp(name, 'i');
     return Person.findOne({"first": {$regex : search_pattern} }).lean()
         .then((person) => {
-            console.log(person);
             res.json(person);
         })
         .catch(err => { 
@@ -96,10 +108,17 @@ app.get('/api/details', (req, res, next) => {
 // Updates a document if it exists in the database, inserts it if it does not.
 app.post('/api/add', (req, res) => {
     const newPerson = req.body;
+    console.log(newPerson);
     Person.updateOne({'first':newPerson.first}, newPerson, {upsert:true}, (err, result) => {
         if (err) return next(err);
-
-        res.send(result);
+        console.log(result);
+        if(result.upserted && result.nModified == 0) {
+            res.send({"added":true});
+        } else if(result.nModified > 0) {
+            res.send({"updated":true});
+        } else {
+            res.send({"upserted":false});
+        }
       });
 });
 

@@ -3,17 +3,13 @@ const mongoose = require("mongoose");
 // remote db connection settings. For security, connectionString should be in a separate file not committed to git
 const connectionString = "mongodb+srv://david-1:people00110099@scc-projects.dybq3.mongodb.net/scc-projects?retryWrites=true&w=majority";
 
-// local db connection settings 
-// const ip = process.env.ip || '127.0.0.1';
-// const connectionString = 'mongodb://' +ip+ '/<DB_NAME>';
-
 mongoose.connect(connectionString, { dbName: "scc-projects", useNewUrlParser: true }); 
 
 mongoose.connection.on('open', () => {
   console.log('Mongoose connected.');
 });
 
-// define Book model in JSON key/value pairs
+// define Person model in JSON key/value pairs
 // values indicate the data type of each key
 const mySchema = mongoose.Schema({
  title: { type: String, required: true },
@@ -22,10 +18,5 @@ const mySchema = mongoose.Schema({
  age: Number,
  job: String
 }); 
-
-// mySchema.methods.select = () => {
-//     var found = this.find({}).lean
-//     return found;
-// };
 
 module.exports = mongoose.model('Person', mySchema, "people");
