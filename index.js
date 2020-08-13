@@ -124,22 +124,37 @@ app.post('/api/add', (req, res) => {
 
 // API
 // Deletes a doc from the database, if it exists
-app.get('/api/delete', (req, res, next) => {
-    var name = req.query.first;
-    console.log(name);
-    const search_pattern = new RegExp(name, 'i');
-    return Person.deleteOne({"first": {$regex : search_pattern} }).lean()
-        .then((result) => {
-            console.log(result);
-            if(result.deletedCount) {
-                res.send({"removed":true});
-            } else {
-                res.send({"removed":false});
-            }
-        })
-        .catch(err => { 
-            return res.status(500).send('Error occurred: database error.')
-        });
+
+// ---------------NOT USING THIS AT THE MOMENT, TRYING TO IMPLEMENT THE METHOD BELOW IT---------------------------
+
+// app.get('/api/delete', (req, res, next) => {
+//     var name = req.query.first;
+//     console.log(name);
+//     const search_pattern = new RegExp(name, 'i');
+//     return Person.deleteOne({"first": {$regex : search_pattern} }).lean()
+//         .then((result) => {
+//             console.log(result);
+//             if(result.deletedCount) {
+//                 res.send({"removed":true});
+//             } else {
+//                 res.send({"removed":false});
+//             }
+//         })
+//         .catch(err => { 
+//             return res.status(500).send('Error occurred: database error.')
+//         });
+// });
+
+//API ------------------ new API, attempt to get it to delete from database as per final assignment criterion
+// Deletes a doc from the database, if it exists
+app.get('/api/delete', (res, req, next) => {
+    console.log(req.query);
+    Person.deleteOne({"_id":req.query.id}, (err, result) => {
+        if(err) return next(err);
+        // returns # of items deleted
+        console.log(result)
+        res.json({"deleted": result})
+    })
 });
    
 // send plain text response

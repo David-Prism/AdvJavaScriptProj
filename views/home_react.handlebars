@@ -21,9 +21,18 @@ const ItemList = (props) => {
 
 const ItemDetail = (props) => {
   return <div>
-           <p>{props.item.first} {props.item.last}</p>
-           <p>{props.item.age}</p>
-           <p>{props.item.job}</p>
+           <h3>Details for {props.item.first} {props.item.last}</h3>
+           <li>Age: {props.item.age}</li>
+           <li>Job: {props.item.job}</li>
+           <hr />
+           <form>
+             first: <input onChange={props.handleEdit} type="text" name="first" value={props.item.first || ""} /><br/>
+             last: <input onChange={props.handleEdit} type="text" name="last" value={props.item.last || ""} /><br/>
+             age: <input onChange={props.handleEdit} type="text" name="age" value={props.item.age || ""} /><br/>
+             job: <input onChange={props.handleEdit} type="text" name="job" value={props.item.job || ""} />
+           </form>
+           <button onClick={props.handleClear}>Clear</button>
+           <button onClick={props.handleDelete}>Delete</button>
          </div>;  
 } 
 
@@ -38,12 +47,51 @@ const ItemDetail = (props) => {
 
           // bind application state to click handler
           this.selectItem = this.selectItem.bind(this);
+          this.handleClear = this.handleClear.bind(this);
+          this.handleEdit = this.handleEdit.bind(this);
+          this.handleDelete = this.handleDelete.bind(this);
        }
+
+       handleDelete() {
+         console.log('deleted!!');
+
+         console.log(this.state.currentItem)
+
+         fetch(`/api/delete?id=${this.state.currentItem._id}`)
+          .then((response) => {
+            return response.json()
+          })
+            .then((result) => {
+              console.log(result)
+            })
+              .catch(err => console.log(err))
+       }
+
+       handleEdit(e) {
+         console.log(e.target.name);
+         console.log(e.target.value);
+
+         let newItem = this.state.currentItem;
+         newItem[e.target.name] = e.target.value;
+         this.setState({currentItem: newItem});
+       }
+
+       handleClear() {
+         this.setState({currentItem: {}});
+       }
+
+//       const ItemDetail = (props) => {
+//        return <div>
+//           <p>{props.item.first} {props.item.last}</p>
+//           <p>{props.item.age}</p>
+//           <p>{props.item.job}</p>
+//         </div>;  
+//        } 
 
       // handle list item clicked
       selectItem(event) {
         let found = this.state.items.find((person) => {
-        return person.first === event.target.innerText;
+          return person.first === event.target.innerText;
         });
         this.setState({currentItem: found});
         console.log(event.target.innerText);
@@ -57,7 +105,13 @@ const ItemDetail = (props) => {
         return (
           <div>
             <ItemList items = {this.state.items} handleClick = {this.selectItem}/>
-            <ItemDetail item = {this.state.currentItem} />
+            <hr />
+            <ItemDetail 
+              item = {this.state.currentItem} 
+              handleClear={this.handleClear}
+              handleEdit={this.handleEdit}
+              handleDelete={this.handleDelete}
+            />
           </div>
           );
       }
