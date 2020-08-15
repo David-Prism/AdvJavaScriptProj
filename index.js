@@ -147,7 +147,7 @@ app.post('/api/add', (req, res) => {
 
 //API ------------------ new API, attempt to get it to delete from database as per final assignment criterion
 // Deletes a doc from the database, if it exists
-app.get('/api/delete', (res, req, next) => {
+app.get('/api/delete', (req, res, next) => {
     console.log(req.query);
     Person.deleteOne({"_id":req.query.id}, (err, result) => {
         if(err) return next(err);
