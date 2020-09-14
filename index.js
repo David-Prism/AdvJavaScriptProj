@@ -7,7 +7,6 @@ let exphbs = require("express-handlebars");
 
 const app = express();
 
-
 const data = require('./data.js');
 const Person = require('./models/Person.js');
 
@@ -19,8 +18,10 @@ app.set("view engine", "handlebars");
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public')); 
 app.use(bodyParser.urlencoded({extended: true})); 
+app.use(bodyParser.json());
 
 app.use('/api', require('cors')()); // set Access-Control-Allow-Origin header for api route
+
 
 //----------------------------------
 
@@ -106,21 +107,24 @@ app.get('/api/details', (req, res, next) => {
 
 // API
 // Updates a document if it exists in the database, inserts it if it does not.
-app.post('/api/add', (req, res) => {
-    const newPerson = req.body;
-    console.log(newPerson);
-    Person.updateOne({'first':newPerson.first}, newPerson, {upsert:true}, (err, result) => {
-        if (err) return next(err);
-        console.log(result);
-        if(result.upserted && result.nModified == 0) {
-            res.send({"added":true});
-        } else if(result.nModified > 0) {
-            res.send({"updated":true});
-        } else {
-            res.send({"upserted":false});
-        }
-      });
-});
+
+// ---------------NOT USING THIS AT THE MOMENT, TRYING TO IMPLEMENT THE METHOD BELOW IT---------------------------
+
+// app.post('/api/add', (req, res) => {
+//     const newPerson = req.body;
+//     console.log(newPerson);
+//     Person.updateOne({'first':newPerson.first}, newPerson, {upsert:true}, (err, result) => {
+//         if (err) return next(err);
+//         console.log(result);
+//         if(result.upserted && result.nModified == 0) {
+//             res.send({"added":true});
+//         } else if(result.nModified > 0) {
+//             res.send({"updated":true});
+//         } else {
+//             res.send({"upserted":false});
+//         }
+//       });
+// });
 
 // API
 // Deletes a doc from the database, if it exists
@@ -155,6 +159,24 @@ app.get('/api/delete', (req, res, next) => {
         console.log(result)
         res.json({"deleted": result})
     })
+});
+
+// API
+// Updates a document if it exists in the database, inserts it if it does not.
+app.post('/api/add', (req, res) => {
+    const newPerson = req.body;
+    console.log(newPerson);
+    Person.updateOne({'first':newPerson.first}, newPerson, {upsert:true}, (err, result) => {
+        if (err) return next(err);
+        console.log(result);
+        if(result.upserted && result.nModified == 0) {
+            res.send({"added":true, "_id": result.upserted._id});
+        } else if(result.nModified > 0) {
+            res.send({"updated":true});
+        } else {
+            res.send({"upserted":false});
+        }
+      });
 });
    
 // send plain text response

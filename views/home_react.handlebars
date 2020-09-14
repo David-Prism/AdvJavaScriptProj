@@ -13,7 +13,7 @@
 <script type="text/babel">
 
 const ItemList = (props) => { 
-  console.log(props);
+//  console.log(props);
   const listItems = props.items.map((item) =>  <li key={item.first} onClick = {props.handleClick}>{item.first}</li>);
 
   return <ul>{listItems}</ul>; 
@@ -33,89 +33,103 @@ const ItemDetail = (props) => {
            </form>
            <button onClick={props.handleClear}>Clear</button>
            <button onClick={props.handleDelete}>Delete</button>
+           <button onClick={props.handleUpdate}>Update</button>
          </div>;  
 } 
 
-    class App extends React.Component{
-      constructor(props){
-          super(props);
-          // Set initial state using data from server application
-          this.state = {
-            items: {{{ items }}},
-            currentItem: {} // current selected item
-          };
+class App extends React.Component {
+  constructor(props){
+      super(props);
+      // Set initial state using data from server application
+      this.state = {
+        items: {{{ items }}},
+        currentItem: {} // current selected item
+      };
 
-          // bind application state to click handler
-          this.selectItem = this.selectItem.bind(this);
-          this.handleClear = this.handleClear.bind(this);
-          this.handleEdit = this.handleEdit.bind(this);
-          this.handleDelete = this.handleDelete.bind(this);
-       }
+      // bind application state to click handler
+      this.selectItem = this.selectItem.bind(this);
+      this.handleClear = this.handleClear.bind(this);
+      this.handleEdit = this.handleEdit.bind(this);
+      this.handleDelete = this.handleDelete.bind(this);
+      this.handleUpdate = this.handleUpdate.bind(this);
+  }
 
-       handleDelete() {
-         console.log('deleted!!');
+  handleDelete() {
+    console.log('deleted!!');
 
-         console.log(this.state.currentItem)
+    console.log(this.state.currentItem)
 
-         fetch(`/api/delete?id=${this.state.currentItem._id}`)
-          .then((response) => {
-            return response.json()
-          })
-            .then((result) => {
-              console.log(result)
-            })
-              .catch(err => console.log(err))
-       }
+    fetch(`/api/delete?id=${this.state.currentItem._id}`)
+    .then((response) => {
+      return response.json()
+    })
+      .then((result) => {
+        console.log(result)
+      })
+        .catch(err => console.log(err))
+  }
 
-       handleEdit(e) {
-         console.log(e.target.name);
-         console.log(e.target.value);
+  handleEdit(e) {
+//    console.log(e.target.name);
+//    console.log(e.target.value);
 
-         let newItem = this.state.currentItem;
-         newItem[e.target.name] = e.target.value;
-         this.setState({currentItem: newItem});
-       }
+    let newItem = this.state.currentItem;
+    newItem[e.target.name] = e.target.value;
+    this.setState({currentItem: newItem});
+  }
 
-       handleClear() {
-         this.setState({currentItem: {}});
-       }
+  handleClear() {
+    this.setState( { currentItem: { } } );
+  }
 
-//       const ItemDetail = (props) => {
-//        return <div>
-//           <p>{props.item.first} {props.item.last}</p>
-//           <p>{props.item.age}</p>
-//           <p>{props.item.job}</p>
-//         </div>;  
-//        } 
-
-      // handle list item clicked
-      selectItem(event) {
-        let found = this.state.items.find((person) => {
-          return person.first === event.target.innerText;
+  handleUpdate(e) {
+//    console.log(e.target.name);
+//    console.log(e.target.value);
+    fetch("/api/add", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(this.state.currentItem)
+    })
+    .then(res => res.json())
+        .then((data) => {
+        console.log(data)
+        // handle successful response
+        })
+          .catch((err) => {
+          console.log(err)
+          // handle error
         });
-        this.setState({currentItem: found});
-        console.log(event.target.innerText);
-        console.log(found);
-        // event.target is the HTML item clicked
+  }
 
-      }
+  // handle list item clicked
+  selectItem(event) {
+    let found = this.state.items.find((person) => {
+      return person.first === event.target.innerText;
+    });
+    this.setState({currentItem: found});
+//    console.log(event.target.innerText);
+    console.log(found);
+    // event.target is the HTML item clicked
 
-      render() {
-        // render app UI elements
-        return (
-          <div>
-            <ItemList items = {this.state.items} handleClick = {this.selectItem}/>
-            <hr />
-            <ItemDetail 
-              item = {this.state.currentItem} 
-              handleClear={this.handleClear}
-              handleEdit={this.handleEdit}
-              handleDelete={this.handleDelete}
-            />
-          </div>
-          );
-      }
-    }
+  }
+
+  render() {
+    // render app UI elements
+    return (
+      <div>
+        <ItemList items = {this.state.items} handleClick = {this.selectItem}/>
+        <hr />
+        <ItemDetail 
+          item = {this.state.currentItem} 
+          handleClear={this.handleClear}
+          handleEdit={this.handleEdit}
+          handleDelete={this.handleDelete}
+          handleUpdate={this.handleUpdate}
+        />
+      </div>
+      );
+  }
+}
 
     ReactDOM.render(<App />, document.getElementById('root'));
 </script>
